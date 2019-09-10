@@ -11,46 +11,51 @@ You've spent the last few lessons learning about three basic nested structures:
 * `Array` of `Array`s
 * `Array` of `Hash`es
 * `Hash` of `Hash`es
+* `Hash` of `Array`s
 
-And it would be a fair question to ask WHY we've been teaching you with
-exercises with vending machines, fictional characters and the genealogy of
-Hollywood royalty. Our goal is two-fold:
+By using these basic nested data structures we've gained a foundation for
+modeling many things in the world: vending machines, fictional characters,
+the genealogy of a Hollywood family, and a medical record result-set.
 
-1. We want you to see that ***anything*** can be modeled in programming. From
-   characters in a book to verb conjugation rules to customers and products. No
-   topic is off-limits!
-2. We also want you to see that modeling complex data with nested data
-   structures is possible. Through nesting we can model very complex systems
+But brace yourself, here comes something astounding:
 
-Ultimately, at some point you will be called to build a program by a person who
-knows very little about programming. They won't be able to tell you what kind
-of data structure to create, ***you*** will have to create it. And you'll want
-to create it in a sensible way that your collaborators (other humans) and
-computers can both work with.
+***We can nest nested data structures in other nested data structures***
+
+Your `Array` of `Hashes` (AoH) can have keys that point to `Array`s of
+`Array`s (AoA). Or your nested node structure of `Hash`es of `Hash`es
+can have a key that points to an `Array` of `Hash`es.
+
+In this lesson we're going to talk you through how to represent a
+vending machine. Get a pen and scratch paper so that you can draw 
+pictures to help drive these points home. We mentioned that we learn
+NDS' because describing how they operate as paragraphs is challenging.
 
 ## Identify Nested Structures Can Be Mixed
 
 As we try to more faithfully model the world around us, we'll see that it's
 very helpful to mix and match NDS to provide a better model of reality.
 
-Let's update the model of a grid-based vending machine again.
+Let's update our model of a grid-based vending machine again. Remember,
+they look like this:
+
+![Grid-based vending machine](https://curriculum-content.s3.amazonaws.com/programming-univbasics-5/nested-arrays-lab/vending_grid.png)
 
 ### Array of Array of Array or Hashes...
 
-Ultimately, in order to model a real grid-based vending machine (J2 is chewing
-gum, K3 is some mints), we think the right NDS is:
+Ultimately, in order to model a real grid-based vending machine (C20 is a candy bar
+gum, B50 is a drink), we think the right NDS is:
 
 ```text
 Array of Array
 ...of Array
 ...of Hashes
-...with keys `:name` and `:pieces`
-...where :name points to a `String` and :pieces points to another Array
+...with keys `:name` and `:pieces` where :name points to a `String` and :pieces points to another Array
 ```
 
 We're giving you the answer so that you can think about how this might work for
 yourself. Draw it out on paper and see if you can think how our explanation
-will work.
+will work. Teach your friend, your cat, or your imaginary friend Hogarth how ***you***
+think things work and then read the explanation below.
 
 ### Explaining the Vending Machine
 
@@ -59,110 +64,95 @@ Many vending machines use a grid to identify which snack one wants. The keyword
 might pick the third element on the 4th row (remember, indexes start at 0 in a
 Ruby vending machine).
 
-But most vending machines that we know actually have multiple instances of the
-snack at that location. It holds the snack in a row. Row should suggest another
-data structure.
-
 ### Explaining the Coordinate to Array
 
-Because the snacks are in an unlabeled, "row" on a little spiral twist device,
-they're pretty much on an `Array`. So we have an Array of Array of Array.
 
 Here's an empty picture of what that might look like in code:
 
 ```ruby
 vending_machine = [
- # Row 0
- [
-  # Column 0
-  ["Cookies", "Cookies", "Cookies", "Cookies"],
-
-  # Column 1
-  ["Tooth-Melters", "Tooth-Melters"],
-
-  # Column 2
-  ["Gummy Apple", "Gummy Apple", "Gummy Moldy Apple"]
- ],
-
- # Row 1
- [
-  # etc.
- ],
-
-  # Row 2
- [
-  # etc.
- ],
-
- # Etc.
-] #=> => [[["Cookies", "Cookies", "Cookies", "Cookies"], ["Tooth-Melters", "Tooth-Melters"], ["Gummy Apple", "Gummy Apple", "Gummy Moldy Apple"]], [], []]
+   [
+     ["Vanilla Cookies", "Pistachio Cookies", "Chocolate Cookies", "Chocolate Chip Cookies"],
+     ["Tooth-Melters", "Tooth-Destroyers", "Enamel Eaters", "Dentist's Nighmare"],
+     ["Gummy Apple", "Gummy Apple", "Gummy Moldy Apple"]
+   ],
+   [
+     ["Grape Drink", "Orange Drink", "Pineapple Drink"],
+     ["Mints", "Curiously Toxic Mints", "US Mints"]
+    ]
+  ]
+  
+#=> [[["Vanilla Cookies", "Pistachio Cookies", "Chocolate Cookies", "Chocolate Chip Cookies"], ["Tooth-Melters", "Tooth-Destroyers", "Enamel Eaters", "Dentist's Nighmare"], ["Gummy Apple", "Gummy Apple", "Gummy Moldy Apple"]], [["Grape Drink", "Orange Drink", "Pineapple Drink"], ["Mints", "Curiously Toxic Mints", "US Mints"]]]
 ```
 
-If you're having trouble envisioning this, try filling out this code more and
-work with the data structure. You're not wasting time to practice building
-structures like this. It's one of the most fundamental parts of data
-processing.
+### Explaining the Coordinate as Pointing to an Array
 
-### Explaining the Snack Items as Hashes
+Most grid-based vending machines actually have multiple instances of the
+snack at that location. The structure above has _only one_
+`String` at each coordinate doesn't match reality well enough.
 
-But what's in each slots of that spiral twist device? It's not really _just_ a
-`String`, it's more like a packet with information (name) and also a certain
-number of pieces. One instance of a snack.
+> **NOTE**: No one tells us programmers "you've modeled this well" or
+> you've modeled this well-enough so stop. Part of the job is knowing
+> how to model the data so you can work with it.
 
-A thing with properties with values...hmmm. Which structure to use?
+Most often, each coordinate points to a corkscrew-shaped spinner that rotates
+enough to "pop" the first snack container off the spinner. This suggests that each coordinate should point to an `Array`.
 
-That should trigger `Hash` in your mind.  A `:name` property should point to
-`String`. The `:pieces` key should point to...well, a mixed collection of
-pieces, that's probably an `Array`. Corn chip 0, corn chip 1, corn chip 2,
-etc.; Chocolate nugget 0, chcolate nugget 1, etc.
+So each coordinate should point to an `Array`.
 
-But let's imagine that there are 3 snacks located at `[3][2]` thus:
+### Explaining Each Snack Items as Hashes
+
+So on this "spinner" `Array`, how should we represent each snack item? Well a
+simple `String` would tell us what the snack's name is ***and that might
+be good enough for your purposes***! But when _we_ close our eyes and imagine
+a snack, we imagine a _name_ for the snack and a collection of _pieces_, together.
+
+When bundling multiple properties and values together, the structure we want to
+think of is a `Hash`. Our spinner `Array` should contain`Hash`es.
+
+Each `Hash` should have a `:name` key pointing to a `String` and a `:pieces` key
+pointing to an `Integer` of pieces in the snack.
+
+### Explain the Entire Vending Machine from the Bottom Up
+
+We just finished a "top-down" model of a vending machine. Let's try a
+"bottom-up" model:
+
+
+<pre>
+A snack count of pieces in the package represented as `Integer`s
+Each snack has a name stored as a `String`
+Each snack is represented by a `Hash` that has keys `:name` and `:string` that point to the name `String` and pieces `Array` as just described
+
+Multiple snacks are stored in an indexed collection, an `Array`
+
+There are many of these `Array`s and they are accessible within an AoA "grid"
+</pre>
+
+
+A real version of this data structure is the following:
 
 ```ruby
-vending_machine[3][2] = [
-  { name: "peanut butter cup", pieces: [ "cup 1", "cup 2", "cup 3"] },
-  { name: "peanut butter cup", pieces: [ "cup 1", "cup 2", "cup 3"] },
-  { name: "peanut butter cup", pieces: [ "cup 1", "cup 2", "cup 3"] },
-]
+vending_machine = [[[{:name=>"Vanilla Cookies", :pieces=>3},
+   {:name=>"Pistachio Cookies", :pieces=>3},
+   {:name=>"Chocolate Cookies", :pieces=>3},
+   {:name=>"Chocolate Chip Cookies", :pieces=>3}],
+  [{:name=>"Tooth-Melters", :pieces=>12},
+   {:name=>"Tooth-Destroyers", :pieces=>12},
+   {:name=>"Enamel Eaters", :pieces=>12},
+   {:name=>"Dentist's Nighmare", :pieces=>20}],
+  [{:name=>"Gummy Sour Apple", :pieces=>3},
+   {:name=>"Gummy Apple", :pieces=>5},
+   {:name=>"Gummy Moldy Apple", :pieces=>1}]],
+ [[{:name=>"Grape Drink", :pieces=>1},
+   {:name=>"Orange Drink", :pieces=>1},
+   {:name=>"Pineapple Drink", :pieces=>1}],
+  [{:name=>"Mints", :pieces=>13},
+   {:name=>"Curiously Toxic Mints", :pieces=>1000},
+   {:name=>"US Mints", :pieces=>99}]]]
+] #=> [[[{:name=>"Vanilla Cookies", :pieces=>3}, {:name=>"Pistachio Cookies", :pieces=>3}, {:name=>"Chocolate Cookies", :pieces=>3}, {:name=>"Chocolate Chip Cookies", :pieces=>3}], [{:name=>"Tooth-Melters", :pieces=>12}, {:name=>"Tooth-Destroyers", :pieces=>12}, {:name=>"Enamel Eaters", :pieces=>12}, {:name=>"Dentist's Nighmare", :pieces=>20}], [{:name=>"Gummy Sour Apple", :pieces=>3}, {:name=>"Gummy Apple", :pieces=>5}, {:name=>"Gummy Moldy Apple", :pieces=>1}]], [[{:name=>"Grape Drink", :pieces=>1}, {:name=>"Orange Drink", :pieces=>1}, {:name=>"Pineapple Drink", :pieces=>1}], [{:name=>"Mints", :pieces=>13}, {:name=>"Curiously Toxic Mints", :pieces=>1000}, {:name=>"US Mints", :pieces=>99}]]]
+
 ```
-
-And now let's pretend you just bought a snack from `vending_machine[3][2]`
-
-`vending_machine[3][2]` now looks like (because you have a snack!):
-
-```ruby
-vending_machine[3][2] = [
-  { name: "peanut butter cup", pieces: [ "cup 1", "cup 2", "cup 3"] },
-  { name: "peanut butter cup", pieces: [ "cup 1", "cup 2", "cup 3"] },
-]
-```
-
-...but your hand now contains:
-
-```ruby
-  { name: "peanut butter cup", pieces: [ "cup 1", "cup 2", "cup 3"] },
-```
-
-You might then decide:
-
-```ruby
-my_name = "Byron"
-snack = machine[3][2].pop
-friends = ["Maisie", "Harley", "Sadie"]
-i = 0
-
-while i < friends.length do
-  puts "#{my_name} gives #{snack[i]} to #{friends[i]}
-end
-```
-
-So ultimately you decide the right NDS for modeling a vending machine is:
-
-AoAoAoH where the Hash has keys `:name` and `:pieces`
-
-Obviously `:pieces` could be more than simple `Strings` (perhaps `Hash`es full
-of nutritional data?), but at some point when we model reality we say "good
-enough."
 
 ## Conclusion
 
@@ -175,4 +165,7 @@ retrieving data fast.
 By the way, programs that excel at updating and retrieving information from data
 structures are called _databases_.
 
-## Resources
+Additionally, you might be able to guess that having to key in these NDS' in order
+to run your program is a little bit un-fun. Programmers have learned to 
+store representations of their NDS in files that they read in at runtime. We call
+these _data files_. You'll learn more about reading in complex data later on!
