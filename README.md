@@ -237,7 +237,8 @@ real world, you'll build hybrids of the four simple data structures we taught
 you. In time, you'll find ways to make lookups and updates in those structures
 faster. Programs that excel at updating and retrieving information from data
 structures are called _databases_. We didn't want to scare you, but learning
-to build NDS' is basically learning to write _databases_. In time you'll learn
-to store your NDS outside of your Ruby code (typically in "data files"), but for
-now it's OK to keep the data you work on and the code with which you work on it
-in the same file.
+to build NDS' is your first step toward learning to write _databases_.
+
+Later you'll learn how to store your NDS outside of your Ruby code (typically
+in a "data file"), but for now it's OK to keep the data you work on and the
+code with which you work on it in the same file.
