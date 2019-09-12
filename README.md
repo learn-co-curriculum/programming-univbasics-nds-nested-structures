@@ -8,12 +8,12 @@
 
 You've spent the last few lessons learning about three basic nested structures:
 
-* `Array` of `Array`s
-* `Array` of `Hash`es
-* `Hash` of `Hash`es
-* `Hash` of `Array`s
+* `Array` of `Array`s, or "AoA"
+* `Array` of `Hash`es, or "AoH"
+* `Hash` of `Hash`es, or "HoH"
+* `Hash` of `Array`s, or "HoA"
 
-By using these basic nested data structures we've gained a foundation for
+By using these basic nested data structures, we've gained a foundation for
 modeling many things in the world: vending machines, fictional characters,
 the genealogy of a Hollywood family, and a medical record result-set.
 
@@ -22,22 +22,33 @@ But brace yourself, here comes something astounding:
 ***We can nest nested data structures in other nested data structures***
 
 Your `Array` of `Hashes` (AoH) can have keys that point to `Array`s of
-`Array`s (AoA). Or your nested node structure of `Hash`es of `Hash`es
-can have a key that points to another `Array` of `Hash`es.
+`Array`s (AoA). Or your nested node structure of `Hash`es of `Hash`es (HoH)
+can have a key that points to another `Array` of `Hash`es (AoH). From what
+we now know about NDS, we should be able to see that these NDS' can become
+very complex!
 
-In this lesson, we're going to talk you through how to represent a
-vending machine. Get a pen and scratch paper so that you can draw 
-pictures to help drive these points home.
+In this lesson, we're going to walk you through an improved vending
+machine model. Get a pen and some paper so that you can draw 
+pictures to help drive these points home. Using sketches will reaally
+help you "get it." This is why developers in professional settings are
+always sketching their NDS' whiteboards. It really works!
 
 ## Identify Nested Structures Can Be Mixed
 
-As we try to more faithfully model the world around us, we'll see that it's
+As we try to more accurately model the world around us, we'll see that it's
 very helpful to mix and match NDS to provide a better model of reality.
 
 Let's update our model of a grid-based vending machine again. Remember,
 they look like this:
 
 ![Grid-based vending machine](https://curriculum-content.s3.amazonaws.com/programming-univbasics-5/nested-arrays-lab/vending_grid.png)
+
+We're going to work "top-down" and then re-work the modeling "bottom-up."
+Neither method is more correct than the other. The problem of modeling sometimes
+requires us to be flexible. "Top-down" means: describe the outermost structure
+and then fill it in, and fill in any structures that were just added until you
+reach the smallest structure. "Bottom-up" means: describe the innermost structure
+and "wrap it" with a container repeatedly until the outermost container is reached.
 
 ### Array of Array of Array or Hashes...
 
@@ -48,13 +59,16 @@ gum, B50 is a drink), we think the right NDS is:
 Array of Array
 ...of Array
 ...of Hashes
-...with keys `:name` and `:pieces` where :name points to a `String` and :pieces points to an Integer count of pieces
+...with keys `:name` and `:pieces` where
+......:name points to a `String`
+......:pieces points to an Integer count of pieces
 ```
 
 We're giving you the answer so that you can think about how this might work for
 yourself. Draw it out on paper and see if you can think how our explanation
 will work. Teach your friend, your cat, or your imaginary friend Hogarth how ***you***
-think things work and then read the explanation below.
+think things work **and then** read the explanation below. Don't lose this chance
+to train your brain!
 
 ### Explaining the Vending Machine
 
@@ -84,37 +98,45 @@ vending_machine = [
 
 ### Explaining the Coordinate as Pointing to an Array
 
-Most grid-based vending machines actually have multiple instances of the
-snack at that location. The structure above has _only one_
-`String` at each coordinate. That doesn't match reality well enough.
-
-> **NOTE**: No one tells us programmers "you've modeled this well" or
-> you've modeled this well-enough so stop. Part of the job is knowing
-> how to model the data so you can work with it.
+This first step was good, but it misses an important detail about 
+_real_ vending machines: most grid-based vending machines actually have multiple instances of the
+snack at that coordinate. The structure above has _only one_
+`String` at each coordinate. Also each snack at a coordinate has some
+properties. This model isn't quite accurate enough.
 
 Most often, each coordinate points to a corkscrew-shaped spinner that rotates
 enough to "pop" the first snack container off the spinner. This suggests that
-each coordinate should point to an `Array`.
+each coordinate should point to an `Array` instead of a simple `String`. Thus
+we're up to an "AoAoA" (`Array` of `Array`s of `Array`s).
 
 ### Explaining Each Snack Items as Hashes
 
-So on this "spinner" `Array`, how should we represent each snack item?
+So in the `Array` that represents the "spinner" device, how should we represent
+each snack item?
 
 A simple `String` would tell us what the snack's name is ***and that might
 be good enough for your purposes***! But when _we_ close our eyes and imagine
 a snack, we imagine a _name_ for the snack and a count of _pieces_, together.
 
-> **Advanced**: Or mwe might consider making _pieces_ point to another `Array`
-> We could ask that `Array` its length since `Array`s know how big they are.
-> We think that our model is realistic enough without modeling every
-> corn chip in the bag. But, if we needed that precision, we could certainly
-> model it in an NDS!
+We'll leave out the price for the moment. Snacks in the our vending machine
+are free like on _Star Trek_.
 
 When bundling multiple properties and values together, the structure we want to
 think of is a `Hash`. Our spinner `Array` should contain`Hash`es.
 
 Each `Hash` should have a `:name` key pointing to a `String` and a `:pieces` key
 pointing to an `Integer` of pieces in the snack.
+
+Thus our NDS model is:
+
+```text
+Array of Array
+...of Array
+...of Hashes
+...with keys `:name` and `:pieces` where
+......:name points to a `String`
+......:pieces points to an Integer count of pieces
+```
 
 Put your pencil down. You should have sketched out a profile of how this 
 vending machine's NDS works. We've taken a top-down approach: describing
@@ -124,19 +146,22 @@ inner-most NDS and "wrap" it until we're back at the vending machine.
 
 ### Explain the Entire Vending Machine from the Bottom Up
 
+Here's a bottom-up view of the same NDS:
 
 <pre>
 A count of pieces in the package represented as an `Integer`
 Each snack has a name stored as a `String`
 Each snack is represented by a `Hash` that has keys `:name` and `:count` that point to the name `String` and pieces `Integer` as just described
 
-Multiple snacks are stored in an indexed collection, an `Array`
-
-There are many of these `Array`s and they are accessible within an AoA "grid"
+Multiple snacks are stored in an indexed collection, an `Array` that represents
+the "spinner" device. Each "spinner" is accessible by a coordinate within an AoA "grid."
 </pre>
 
+### Show the Data Structure as Ruby Code
 
-A real version of this data structure is the following:
+A real version of this data structure is the following. We've included the
+structure as well as a few Ruby commands to get some sample data out of
+the NDS.
 
 ```ruby
 vending_machine = [[[{:name=>"Vanilla Cookies", :pieces=>3},
@@ -158,15 +183,19 @@ vending_machine = [[[{:name=>"Vanilla Cookies", :pieces=>3},
    {:name=>"US Mints", :pieces=>99}]]]
 ] #=> [[[{:name=>"Vanilla Cookies", :pieces=>3}, {:name=>"Pistachio Cookies", :pieces=>3}, {:name=>"Chocolate Cookies", :pieces=>3}, {:name=>"Chocolate Chip Cookies", :pieces=>3}], [{:name=>"Tooth-Melters", :pieces=>12}, {:name=>"Tooth-Destroyers", :pieces=>12}, {:name=>"Enamel Eaters", :pieces=>12}, {:name=>"Dentist's Nighmare", :pieces=>20}], [{:name=>"Gummy Sour Apple", :pieces=>3}, {:name=>"Gummy Apple", :pieces=>5}, {:name=>"Gummy Moldy Apple", :pieces=>1}]], [[{:name=>"Grape Drink", :pieces=>1}, {:name=>"Orange Drink", :pieces=>1}, {:name=>"Pineapple Drink", :pieces=>1}], [{:name=>"Mints", :pieces=>13}, {:name=>"Curiously Toxic Mints", :pieces=>1000}, {:name=>"US Mints", :pieces=>99}]]]
 
+# Get a "spinner"
+vending_machine[0][0] #=> > [{:name=>"Tooth-Melters", :pieces=>12}, {:name=>"Tooth-Destroyers", :pieces=>12}, {:name=>"Enamel Eaters", :pieces=>12}, {:name=>"Dentist's Nighmare", :pieces=>20}]
+
+# Get a spinner's first snack's pieces count
 vending_machine[1][1][0][:pieces] #=> 13
 
-# If I select [0,1] from the vending machine, I'll get
-mine_if_i_buy = vending_machine[0][1][0]
+# Work with a single snack
+test_snack = vending_machine[0][1][0]
+test_snack[:pieces] #=> 12
+test_snack[:name] #=> "Tooth-Melters"
 
-mine_if_i_buy[:pieces] #=> 12
-mine_if_i_buy[:name] #=> "Tooth-Melters"
-
-puts "I'm definitely thinking about buying #{mine_if_i_buy[:name]} and sharing my #{mine_if_i_buy[:pieces]}"
+# Print out some fun data
+puts "I'm definitely thinking about buying #{test_snack[:name]} and sharing my #{test_snack[:pieces]}"
 ```
 
 ### Next Step: Working with the Nested Data Structure
@@ -176,26 +205,39 @@ question that this NDS might help us understand:
 
 ***How many pieces total are in this vending machine?***
 
-_Modeling_ the vending machine in a predictable way means that we can write
-code to answer this question. You have all the skills required to answer
-that question now. Learning how to work with NDS' to produce _insight_ will
-be our next area of focus.
+_Modeling_ the vending machine in a predictable way that NDS' require us
+to use means that we can write code to answer this question in less than
+a second! While our example is candy-in-a-vending-machine, this same structure
+might be....
 
-....But the answer is `1192` Let's learn how to calculate that!
+* Employees in divisions of a company
+* Monters in various rooms of a dungeon in a video game
+* Zombies in map coordinates in the city
 
+_Modeling_ is the first step. _Deriving insight_ is why we really learn
+NDS'. We need them as models on which to write code to produce important
+_insights_ like
+
+* "How many candies do we need to bring when we restock the machine?"
+* "How many lunches should we order for the company lunch (one per employee)"
+* "Do we have enough magic points and a strong enough sword to defeat (number of monsters)?"
+* "If we only have 5 bullets and a machete, what's the best way through a zombie city?"
+
+You have all the skills required to answer these question now! Think of it, you're
+almost able to model simple games now! Our next lessons will help you build confidence
+to start modeling whatever you want and interact with it.
+
+....By the way, there are `1192`pieces in the vending machine.
+Let's learn how to calculate this using Ruby and NDS'!
 
 ## Conclusion
 
 NDS serve to help us model complex data structures. As you seek to model the
-real world you'll build hybrids of the three simple data structures we taught
-you. With time you'll find ways to make lookups in those structures faster.
-You'll learn to optimize these structures and tune them to make updating and
-retrieving data fast.
-
-By the way, programs that excel at updating and retrieving information from data
-structures are called _databases_.
-
-Additionally, you might be able to guess that having to key in these NDS' in order
-to run your program is a little bit un-fun. Programmers have learned to 
-store representations of their NDS in files that they read in at runtime. We call
-these _data files_. You'll learn more about reading in complex data later on!
+real world, you'll build hybrids of the four simple data structures we taught
+you. In time, you'll find ways to make lookups and updates in those structures
+faster. Programs that excel at updating and retrieving information from data
+structures are called _databases_. We didn't want to scare you, but learning
+to build NDS' is basically learning to write _databases_. In time you'll learn
+to store your NDS outside of your Ruby code (typically in "data files"), but for
+now it's OK to keep the data you work on and the code with which you work on it
+in the same file.
