@@ -34,6 +34,8 @@ always sketching their NDS' whiteboards. It really works!
 
 ## Describe a Physical Vending Machine
 
+![Grid-based vending machine](https://curriculum-content.s3.amazonaws.com/programming-univbasics-5/nested-arrays-lab/vending_grid.png)
+
 The other week we saw a vending machine in a hospital. After swiping your
 credit card or using your phone's wallet, you entered a **grid coordinate**.
 At each intersection (coordinate) in the vending machine, there was a
@@ -56,20 +58,6 @@ a name.
 
 ## Identify that Nested Structures Can Be Mixed
 
-Let's update our model of a grid-based vending machine again. Remember, they
-look like this:
-
-![Grid-based vending machine](https://curriculum-content.s3.amazonaws.com/programming-univbasics-5/nested-arrays-lab/vending_grid.png)
-
-We're going to work "top-down" and then re-work the modeling "bottom-up."
-Neither method is more correct than the other. The problem of modeling sometimes
-requires us to be flexible. "Top-down" means: describe the outermost structure
-and then fill it in, and fill in any structures that were just added until you
-reach the smallest structure. "Bottom-up" means: describe the innermost structure
-and "wrap it" with a container repeatedly until the outermost container is reached.
-
-### Array of Array of Array or Hashes...
-
 Ultimately, in order to model a real grid-based vending machine (C20 is a candy
 bar off of a spinner of gum packages, B50 is a drink off of a spinner of
 drinks), we think the right NDS is:
@@ -78,9 +66,9 @@ drinks), we think the right NDS is:
 Array of Array
 ...of Array
 ...of Hashes
-...with keys `:name` and `:pieces` where
-......:name points to a `String`
-......:pieces points to an Integer count of pieces
+.....with keys `:name` and `:pieces` where
+.......:name points to a `String`
+.......:pieces points to an Integer count of pieces
 ```
 
 We're giving you the answer so that you can think about how this might work for
@@ -89,91 +77,27 @@ will work. Teach your friend, your cat, or your imaginary friend Hogarth how ***
 think things work **and then** read the explanation below. Don't lose this chance
 to train your brain!
 
-### Explaining the Vending Machine
+### Explain the Entire Vending Machine from the Top Down
 
-Many vending machines use a grid to identify which snack the customer wants. The keyword
-"grid" should immediately suggest an AoA.  Using a coordinate like `[3][2]` we
-might pick the third element on the 4th row (remember, indexes start at 0 in a
-Ruby vending machine).
-
-### Explaining the Coordinate to Array
-
-Here's a picture of what we just described in code:
-
-```ruby
-vending_machine = [
-   [
-     ["Vanilla Cookies", "Pistachio Cookies", "Chocolate Cookies", "Chocolate Chip Cookies"],
-     ["Tooth-Melters", "Tooth-Destroyers", "Enamel Eaters", "Dentist's Nighmare"],
-     ["Gummy Apple", "Gummy Apple", "Gummy Moldy Apple"]
-   ],
-   [
-     ["Grape Drink", "Orange Drink", "Pineapple Drink"],
-     ["Mints", "Curiously Toxic Mints", "US Mints"]
-    ]
-  ]
-#=> [[["Vanilla Cookies", "Pistachio Cookies", "Chocolate Cookies", "Chocolate Chip Cookies"], ["Tooth-Melters", "Tooth-Destroyers", "Enamel Eaters", "Dentist's Nighmare"], ["Gummy Apple", "Gummy Apple", "Gummy Moldy Apple"]], [["Grape Drink", "Orange Drink", "Pineapple Drink"], ["Mints", "Curiously Toxic Mints", "US Mints"]]]
-```
-
-### Explaining the Coordinate as Pointing to an Array
-
-This first step was good, but it misses an important detail about _real_
-vending machines: most grid-based vending machines actually have multiple
-instances of the snack at that coordinate on the "spinner." The structure above
-has _only one_ `String` at each coordinate. Also, each snack at a coordinate
-has some properties. This model isn't _quite_ accurate enough.
-
-Most often, each coordinate points to a corkscrew-shaped spinner that rotates
-enough to "pop" the first snack container off the spinner. This suggests that
-each coordinate should point to an `Array` instead of a simple `String`. Thus
-we're up to an "AoAoA" (`Array` of `Array`s of `Array`s).
-
-### Explaining Each Snack Items as Hashes
-
-So in the `Array` that represents the "spinner" device, how should we represent
-each snack item?
-
-A simple `String` would tell us what the snack's name is ***and that might
-be good enough for your purposes***! But when _we_ close our eyes and imagine
-a snack, we imagine a _name_ for the snack and a count of _pieces_, together.
-
-We'll leave out the price for the moment. Snacks in our vending machine
-are free like on _Star Trek_.
-
-When bundling multiple properties and values together, the structure we want to
-think of is a `Hash`. Our spinner `Array` should contain `Hash`es.
-
-Each `Hash` should have a `:name` key pointing to a `String` and a `:pieces` key
-pointing to an `Integer` of pieces in the snack.
-
-Thus our NDS model is:
-
-```text
-Array of Array
-...of Array
-...of Hashes
-...with keys `:name` and `:pieces` where
-......:name points to a `String`
-......:pieces points to an Integer count of pieces
-```
-
-Put your pencil down. You should have sketched out a profile of how this
-vending machine's NDS works. We've taken a top-down approach: describing
-the outer-most NDS and then describing the inner structures that make it.
-To check our reasoning, let's reverse the process and describe from the
-inner-most NDS and "wrap" it until we're back at the vending machine.
+<pre>
+We have a coordinate grid. That's an AoA
+In each coordinate, there's a "spinner" with multiple snacks
+Each snack has two important facts associated with it, a :name and a :piece
+count
+</pre>
 
 ### Explain the Entire Vending Machine from the Bottom Up
 
-Here's a bottom-up view ofthe same NDS:
+Here's a bottom-up view of the NDS:
 
 <pre>
 A count of pieces in the package represented as an `Integer`
 Each snack has a name stored as a `String`
-Each snack is represented by a `Hash` that has keys `:name` and `:count` that point to the name `String` and pieces `Integer` as just described
+Each snack collects those facts in a `Hash` that has keys `:name` and `:count`.
 
 Multiple snacks are stored in an indexed collection, an `Array` that represents
 the "spinner" device. Each "spinner" is accessible by a coordinate within an AoA "grid."
+The vending machine is the super-container AoA.
 </pre>
 
 Whichever approach feels more natural to you, feel free to use it. Sometimes
@@ -236,7 +160,7 @@ represents a series of facts just as John Snow's surveys did.
 But that's not _insight_. _Insight_ is when we pair data structures and Ruby
 programming to provide answers that enlighten us as _humans_.
 
-So let's choose an _insight_ to chase that will help guide the rest of this
+So let's choose an _insight_ to pursue that will help guide the rest of this
 module.  Our guiding _insight_ question for the next several lessons is this:
 
 ***How many pieces total are in this vending machine?***
