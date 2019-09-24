@@ -52,8 +52,8 @@ the price value simple integers for clarity.
 
 ## Identify that Nested Structures Can Be Mixed
 
-Ultimately, in order to model a real grid-based vending machine (C20 is a candy
-bar off of a spinner of gum packages, B50 is a drink off of a spinner of
+Ultimately, in order to model a real grid-based vending machine (`C20` is a candy
+bar off of a spinner of gum packages, `B50` is a drink off of a spinner of
 drinks), we think the right NDS is:
 
 ```text
