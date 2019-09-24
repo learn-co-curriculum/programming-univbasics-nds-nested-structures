@@ -64,6 +64,14 @@ Array of Array
 .......:name points to a `String`
 .......:price points to an `Integer` price
 ```
+> **_Your_ Model May Vary**: It's certainly true that there are many other
+> details that we could record in this model. Nutritional value, brand,
+> manufacturer, etc.
+>
+> If you think each coordinate should be a `Hash` with a `:price` and an
+> `Array` of snacks, that also might be entirely appropriate. Discussion of how
+> to model an NDS is what developers spend a great number of their meetings and
+> pair programming sessions discussing!
 
 We're giving you the answer so that you can think about how this might work for
 yourself. Draw it out on paper and see if you can predict how our explanation
