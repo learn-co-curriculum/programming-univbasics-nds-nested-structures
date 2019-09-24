@@ -36,25 +36,19 @@ always sketching their NDS' whiteboards. It really works!
 
 ![Grid-based vending machine](https://curriculum-content.s3.amazonaws.com/programming-univbasics-5/nested-arrays-lab/vending_grid.png)
 
-The other week we saw a vending machine in a hospital. After swiping your
-credit card or using your phone's wallet, you entered a **grid coordinate**.
-At each intersection (coordinate) in the vending machine, there was a
-"spinner." Pay attention to this noun, "spinner." We're going to use it a lot
-in the coming lessons. It's a device that looks like a corkscrew. It **holds
-multiple snack packages** in it.  When you've paid, the spinner spins and
-pushes the front-most snack off of the corkscrew where it falls to a retrieval
-box.
+The other week we saw a vending machine in a hospital waiting room. After
+swiping your credit card or using your phone's wallet, you entered a **grid
+coordinate**.  At each intersection (coordinate) in the vending machine, there
+was a "spinner." Pay attention to this noun, "spinner." We're going to use it a
+lot in the coming lessons. It's a device that looks like a corkscrew. It
+**holds multiple snack packages** in it.  When you've paid, the spinner spins
+and pushes the front-most snack off of the corkscrew "spinner." The snack then
+falls to a retrieval box.
 
-On each snack's packaging a "pieces" count was clearly printed, in addition to
-a name.
+On each snack's packaging a price and a name.
 
-> **_Your_ Model May Vary**: It's certainly true that there are many other
-> details that we could record in this model. Price, for example, might live on
-> each snack or `total_calories`. We've preferred to stick with `:pieces` and
-> `:name`. If you think each coordinate should be a `Hash` with a `:price` and
-> an `Array` of snacks, that's **totally fine**. Discussion of how to model an
-> NDS is what developers spend a great number of their meetings and pair
-> programming sessions discussing!
+We've preferred to stick with `:price` and `:name`. We've also chosen to keep
+the price value simple integers for clarity.
 
 ## Identify that Nested Structures Can Be Mixed
 
@@ -66,9 +60,9 @@ drinks), we think the right NDS is:
 Array of Array
 ...of Array
 ...of Hashes
-.....with keys `:name` and `:pieces` where
+.....with keys `:name` and `:price` where
 .......:name points to a `String`
-.......:pieces points to an Integer count of pieces
+.......:price points to an `Integer` price
 ```
 
 We're giving you the answer so that you can think about how this might work for
@@ -82,8 +76,8 @@ to train your brain!
 <pre>
 We have a coordinate grid. That's an AoA
 In each coordinate, there's a "spinner" with multiple snacks
-Each snack has two important facts associated with it, a :name and a :piece
-count
+Each snack has two important facts associated with it, a :name String and a :price
+Integer
 </pre>
 
 ### Explain the Entire Vending Machine from the Bottom Up
@@ -91,20 +85,18 @@ count
 Here's a bottom-up view of the NDS:
 
 <pre>
-A count of pieces in the package represented as an `Integer`
+A price of the snack represented as an `Integer`
 Each snack has a name stored as a `String`
-Each snack collects those facts in a `Hash` that has keys `:name` and `:count`.
+Each snack collects those facts in a `Hash` that has keys `:name` and `:price`.
 
-Multiple snacks are stored in an indexed collection, an `Array` that represents
+Multiple snacks are stored in an indexed collection, an `Array`, that represents
 the "spinner" device. Each "spinner" is accessible by a coordinate within an AoA "grid."
 The vending machine is the super-container AoA.
 </pre>
 
 Whichever approach feels more natural to you, feel free to use it. Sometimes
 our brains find a logical "foothold" while working bottom-up. Sometimes our
-brains are thinking in a big-picture sense first. Either way is OK! Oftentimes
-the ability to hop from one end to the other is used in job interviews to test
-your mental flexibility. Try to develop both approaches.
+brains are thinking in a big-picture sense first. Either way is OK!
 
 ### Show the Data Structure as Ruby Code
 
@@ -113,41 +105,41 @@ structure, as well as a few Ruby commands, to get some sample data out of
 the NDS.
 
 ```ruby
-vending_machine = [[[{:name=>"Vanilla Cookies", :pieces=>3},
-   {:name=>"Pistachio Cookies", :pieces=>3},
-   {:name=>"Chocolate Cookies", :pieces=>3},
-   {:name=>"Chocolate Chip Cookies", :pieces=>3}],
-  [{:name=>"Tooth-Melters", :pieces=>12},
-   {:name=>"Tooth-Destroyers", :pieces=>12},
-   {:name=>"Enamel Eaters", :pieces=>12},
-   {:name=>"Dentist's Nighmare", :pieces=>20}],
-  [{:name=>"Gummy Sour Apple", :pieces=>3},
-   {:name=>"Gummy Apple", :pieces=>5},
-   {:name=>"Gummy Moldy Apple", :pieces=>1}]],
- [[{:name=>"Grape Drink", :pieces=>1},
-   {:name=>"Orange Drink", :pieces=>1},
-   {:name=>"Pineapple Drink", :pieces=>1}],
-  [{:name=>"Mints", :pieces=>13},
-   {:name=>"Curiously Toxic Mints", :pieces=>1000},
-   {:name=>"US Mints", :pieces=>99}]]] #=> [[[{:name=>"Vanilla Cookies", :pieces=>3}, {:name=>"Pistachio Cookies", :pieces=>3}, {:name=>"Chocolate Cookies", :pieces=>3}, {:name=>"Chocolate Chip Cookies", :pieces=>3}], [{:name=>"Tooth-Melters", :pieces=>12}, {:name=>"Tooth-Destroyers", :pieces=>12}, {:name=>"Enamel Eaters", :pieces=>12}, {:name=>"Dentist's Nighmare", :pieces=>20}], [{:name=>"Gummy Sour Apple", :pieces=>3}, {:name=>"Gummy Apple", :pieces=>5}, {:name=>"Gummy Moldy Apple", :pieces=>1}]], [[{:name=>"Grape Drink", :pieces=>1}, {:name=>"Orange Drink", :pieces=>1}, {:name=>"Pineapple Drink", :pieces=>1}], [{:name=>"Mints", :pieces=>13}, {:name=>"Curiously Toxic Mints", :pieces=>1000}, {:name=>"US Mints", :pieces=>99}]]]
+vending_machine = [[[{:name=>"Vanilla Cookies", :price=>3},
+   {:name=>"Pistachio Cookies", :price=>3},
+   {:name=>"Chocolate Cookies", :price=>3},
+   {:name=>"Chocolate Chip Cookies", :price=>3}],
+  [{:name=>"Tooth-Melters", :price=>12},
+   {:name=>"Tooth-Destroyers", :price=>12},
+   {:name=>"Enamel Eaters", :price=>12},
+   {:name=>"Dentist's Nighmare", :price=>20}],
+  [{:name=>"Gummy Sour Apple", :price=>3},
+   {:name=>"Gummy Apple", :price=>5},
+   {:name=>"Gummy Moldy Apple", :price=>1}]],
+ [[{:name=>"Grape Drink", :price=>1},
+   {:name=>"Orange Drink", :price=>1},
+   {:name=>"Pineapple Drink", :price=>1}],
+  [{:name=>"Mints", :price=>13},
+   {:name=>"Curiously Toxic Mints", :price=>1000},
+   {:name=>"US Mints", :price=>99}]]] #=> [[[{:name=>"Vanilla Cookies", :price=>3}, {:name=>"Pistachio Cookies", :price=>3}, {:name=>"Chocolate Cookies", :price=>3}, {:name=>"Chocolate Chip Cookies", :price=>3}], [{:name=>"Tooth-Melters", :price=>12}, {:name=>"Tooth-Destroyers", :price=>12}, {:name=>"Enamel Eaters", :price=>12}, {:name=>"Dentist's Nighmare", :price=>20}], [{:name=>"Gummy Sour Apple", :price=>3}, {:name=>"Gummy Apple", :price=>5}, {:name=>"Gummy Moldy Apple", :price=>1}]], [[{:name=>"Grape Drink", :price=>1}, {:name=>"Orange Drink", :price=>1}, {:name=>"Pineapple Drink", :price=>1}], [{:name=>"Mints", :price=>13}, {:name=>"Curiously Toxic Mints", :price=>1000}, {:name=>"US Mints", :price=>99}]]]
 
 # Get a "spinner"
-vending_machine[0][0] #=> > [{:name=>"Tooth-Melters", :pieces=>12}, {:name=>"Tooth-Destroyers", :pieces=>12}, {:name=>"Enamel Eaters", :pieces=>12}, {:name=>"Dentist's Nighmare", :pieces=>20}]
+vending_machine[0][0] #=> > [{:name=>"Tooth-Melters", :price=>12}, {:name=>"Tooth-Destroyers", :price=>12}, {:name=>"Enamel Eaters", :price=>12}, {:name=>"Dentist's Nighmare", :price=>20}]
 
 # Get a spinner's first snack
-vending_machine[1][1][0] #=> {:name=>"Mints", :pieces=>13}
+vending_machine[1][1][0] #=> {:name=>"Mints", :price=>13}
 
-# Get a spinner's first snack's pieces count
-vending_machine[1][1][0][:pieces] #=> 13
+# Get a spinner's first snack's price value
+vending_machine[1][1][0][:price] #=> 13
 
 # Work with a single snack
 test_snack = vending_machine[0][1][0]
-test_snack[:pieces] #=> 12
+test_snack[:price] #=> 12
 test_snack[:name] #=> "Tooth-Melters"
 
 # Print out some fun data
-puts "I'm definitely thinking about buying #{test_snack[:name]} and sharing my #{test_snack[:pieces]}"
-#=> I'm definitely thinking about buying Tooth-Melters and sharing my 12
+puts "I'm definitely thinking about buying #{test_snack[:name]} and sharing my $#{test_snack[:price]} investment"
+#=> I'm definitely thinking about buying Tooth-Melters and sharing my $12 investment
 ```
 
 ### Next Step: Working with the Nested Data Structure
@@ -163,7 +155,7 @@ programming to provide answers that enlighten us as _humans_.
 So let's choose an _insight_ to pursue that will help guide the rest of this
 module.  Our guiding _insight_ question for the next several lessons is this:
 
-***How many pieces total are in this vending machine?***
+***What is the total retail value of all the snacks in this vending machine?***
 
 ## Conclusion
 
@@ -178,5 +170,5 @@ Later you'll learn how to store your NDS outside of your Ruby code (typically
 in a "data file"), but for now it's OK to keep the data you work on and the
 code with which you work on it in the same file.
 
-...By the way, there are `1192` pieces in the vending machine.  Let's find out
-how to calculate that _insight_.
+...By the way, the total value is $`1192` in the vending machine.  Let's
+find out how to calculate that _insight_.
