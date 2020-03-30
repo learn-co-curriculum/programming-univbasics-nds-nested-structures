@@ -6,12 +6,18 @@
 
 ## Introduction
 
-You've spent the last few lessons learning about four basic nested structures:
+You've spent the last few lessons learning about a couple of basic nested structures:
 
 * `Array` of `Array`s, or "AoA"
 * `Array` of `Hash`es, or "AoH"
+
+In addition to these, we also have other basic structures:
+
 * `Hash` of `Hash`es, or "HoH"
 * `Hash` of `Array`s, or "HoA"
+
+You may not have worked with each structure yet, but you should be able to map out
+examples of each of the above.
 
 By using these basic nested data structures, we've gained a foundation for
 modeling many things in the world: vending machines, fictional characters,
